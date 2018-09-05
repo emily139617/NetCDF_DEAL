@@ -8,7 +8,7 @@
 
 
 -------------------
-大象放进冰箱的三部曲。
+大象放进冰箱的三部曲。  
 **打开冰箱**
 
 ```
@@ -19,7 +19,7 @@ nc = Dataset(inputFileName)
 # 新建一个本地文件，格式是netcdf4_classic
 newnc = Dataset(outputFileName, "w", format="NETCDF4_CLASSIC")
 ```
-pat：这里使用的格式是netcdf4_classic,自带压缩，同样netcdf4也支持，其他的不支持
+pat：这里使用的格式是netcdf4_classic,自带压缩，同样netcdf4也支持，其他的不支持  
 **把大象放进冰箱**
 
 ```
@@ -62,10 +62,3 @@ newnc.close()
 思路来源：
 [NetCDF writing example](http://nbviewer.jupyter.org/github/Unidata/netcdf4-python/blob/master/examples/writing_netCDF.ipynb)
 
-
-[1]: http://math.stackexchange.com/
-[2]: https://github.com/jmcmanus/pagedown-extra "Pagedown Extra"
-[3]: http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference
-[4]: http://bramp.github.io/js-sequence-diagrams/
-[5]: http://adrai.github.io/flowchart.js/
-[6]: https://github.com/benweet/stackedit
