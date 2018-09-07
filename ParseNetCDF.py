@@ -5,6 +5,8 @@ Created on Mon Sep  3 09:56:11 2018
 @author: Administrator
 """
 # import netCDF4
+import os
+
 from netCDF4 import *
 import numpy as np
 
@@ -80,7 +82,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     spacecraft_num_fill_value = spacecraft_num.getncattr("_FillValue")
     newncspacecraft_num = newnc.createVariable(spacecraft_num.name, spacecraft_num.dtype, spacecraft_num.dimensions,
                                                fill_value=spacecraft_num_fill_value, zlib=True, fletcher32=True,
-                                               chunksizes=[np.uint32(1122508), ])
+                                               chunksizes=[np.uint32(sample_dim.size), ])
     # 设定newncspacecraft_num的变量属性
     newncspacecraft_num.long_name = "BF-1小卫星序号"
     newncspacecraft_num.coordinates = spacecraft_num.getncattr("coordinates")
@@ -94,7 +96,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     sample_data = sample[:]
     # copy sample to newnc
     newncsample = newnc.createVariable(sample.name, sample.dtype, sample.dimensions, zlib=True, fletcher32=True,
-                                       chunksizes=[np.uint32(561254), ])
+                                       chunksizes=[np.uint32(sample_dim.size/2), ])
     # 设定newncsample的变量属性
     newncsample.long_name = "采用序号"
     newncsample.units = sample.getncattr("units")
@@ -108,7 +110,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     lat_fill_value = lat.getncattr("_FillValue")
     # copy lat to newnc
     newnclat = newnc.createVariable(lat.name, lat.dtype, lat.dimensions, zlib=True, fletcher32=True,
-                                    chunksizes=[np.uint32(561254), ], fill_value=lat_fill_value)
+                                    chunksizes=[np.uint32(sample_dim.size/2), ], fill_value=lat_fill_value)
     # 设定newnclat的变量属性
     newnclat.long_name = "纬度"
     newnclat.standard_name = "latitude"
@@ -125,7 +127,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     lon_fill_value = lon.getncattr("_FillValue")
     # copy lon to newnc
     newnclon = newnc.createVariable(lon.name, lon.dtype, lon.dimensions, zlib=True, fletcher32=True,
-                                    chunksizes=[np.uint32(561254), ], fill_value=lon_fill_value)
+                                    chunksizes=[np.uint32(sample_dim.size/2), ], fill_value=lon_fill_value)
     # 设定newnclon的变量属性
     newnclon.long_name = "经度"
     newnclon.standard_name = "longtitude"
@@ -142,7 +144,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     prn_code_fill_value = prn_code.getncattr("_FillValue")
     # copy prn_code to newnc
     newncprn_code = newnc.createVariable(prn_code.name, prn_code.dtype, prn_code.dimensions, zlib=True, fletcher32=True,
-                                         chunksizes=[np.uint32(1122508), ], fill_value=prn_code_fill_value)
+                                         chunksizes=[np.uint32(sample_dim.size), ], fill_value=prn_code_fill_value)
     # 设定newncprn_code的变量属性
     newncprn_code.long_name = "GPS PRN码"
     newncprn_code.coordinates = "sample_time lat lon"
@@ -158,7 +160,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     sv_num_fill_value = sv_num.getncattr("_FillValue")
     # copy sv_num to newnc
     newncsv_num = newnc.createVariable(sv_num.name, sv_num.dtype, sv_num.dimensions, zlib=True, fletcher32=True,
-                                       chunksizes=[np.uint32(1122508), ], fill_value=sv_num_fill_value)
+                                       chunksizes=[np.uint32(sample_dim.size), ], fill_value=sv_num_fill_value)
     # 设定newncsv_num的变量属性
     newncsv_num.long_name = "GPS卫星编号"
     newncsv_num.coordinates = "sample_time lat lon"
@@ -174,7 +176,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     antenna_fill_value = antenna.getncattr("_FillValue")
     # copy antenna to newnc
     newncantenna = newnc.createVariable(antenna.name, antenna.dtype, antenna.dimensions, zlib=True, fletcher32=True,
-                                        chunksizes=[np.uint32(1122508), ], fill_value=antenna_fill_value)
+                                        chunksizes=[np.uint32(sample_dim.size), ], fill_value=antenna_fill_value)
     # 设定newncantenna的变量属性
     newncantenna.long_name = "接收天线"
     newncantenna.coordinates = "sample_time lat lon"
@@ -193,7 +195,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     sc_lat_fill_value = sc_lat.getncattr("_FillValue")
     # copy sc_lat to newnc
     newncsc_lat = newnc.createVariable(sc_lat.name, sc_lat.dtype, sc_lat.dimensions, zlib=True, fletcher32=True,
-                                       chunksizes=[np.uint32(561254), ], fill_value=sc_lat_fill_value)
+                                       chunksizes=[np.uint32(sample_dim.size/2), ], fill_value=sc_lat_fill_value)
     # 设定newncsc_lat的变量属性
     newncsc_lat.long_name = "小卫星指向，纬度"
     newncsc_lat.standard_name = "latitude"
@@ -211,7 +213,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     sc_lon_fill_value = sc_lon.getncattr("_FillValue")
     # copy sc_lon to newnc
     newncsc_lon = newnc.createVariable(sc_lon.name, sc_lon.dtype, sc_lon.dimensions, zlib=True, fletcher32=True,
-                                       chunksizes=[np.uint32(561254), ], fill_value=sc_lon_fill_value)
+                                       chunksizes=[np.uint32(sample_dim.size/2), ], fill_value=sc_lon_fill_value)
     # 设定newncsc_lon的变量属性
     newncsc_lon.long_name = "小卫星指向：经度"
     newncsc_lon.standard_name = "longitude"
@@ -229,7 +231,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     sc_alt_fill_value = sc_alt.getncattr("_FillValue")
     # copy sc_alt to newnc
     newncsc_alt = newnc.createVariable(sc_alt.name, sc_alt.dtype, sc_alt.dimensions, zlib=True, fletcher32=True,
-                                       chunksizes=[np.uint32(561254), ], fill_value=sc_alt_fill_value)
+                                       chunksizes=[np.uint32(sample_dim.size/2), ], fill_value=sc_alt_fill_value)
     # 设定newncsc_alt的变量属性
     newncsc_alt.long_name = "小卫星高度"
     newncsc_alt.coordinates = "sample_time lat lon"
@@ -247,7 +249,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     # copy wind_speed to newnc
     newncwind_speed = newnc.createVariable(wind_speed.name, wind_speed.dtype, wind_speed.dimensions, zlib=True,
                                            fletcher32=True,
-                                           chunksizes=[np.uint32(561254), ], fill_value=wind_speed_fill_value)
+                                           chunksizes=[np.uint32(sample_dim.size/2), ], fill_value=wind_speed_fill_value)
     # 设定newncwind_speed的变量属性
     newncwind_speed.long_name = "NBRCS和LES风速反演结果按最小方差评估得到的风速"
     newncwind_speed.standard_name = "wind_speed"
@@ -267,7 +269,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncfds_nbrcs_wind_speed = newnc.createVariable(fds_nbrcs_wind_speed.name, fds_nbrcs_wind_speed.dtype,
                                                      fds_nbrcs_wind_speed.dimensions, zlib=True,
                                                      fletcher32=True,
-                                                     chunksizes=[np.uint32(561254), ],
+                                                     chunksizes=[np.uint32(sample_dim.size/2), ],
                                                      fill_value=fds_nbrcs_wind_speed_fill_value)
     # 设定newncfds_nbrcs_wind_speed的变量属性
     newncfds_nbrcs_wind_speed.long_name = "由nbrcs 反演的风速"
@@ -288,7 +290,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncfds_les_wind_speed = newnc.createVariable(fds_les_wind_speed.name, fds_les_wind_speed.dtype,
                                                    fds_les_wind_speed.dimensions, zlib=True,
                                                    fletcher32=True,
-                                                   chunksizes=[np.uint32(561254), ],
+                                                   chunksizes=[np.uint32(sample_dim.size/2), ],
                                                    fill_value=fds_les_wind_speed_fill_value)
     # 设定newncfds_les_wind_speed的变量属性
     newncfds_les_wind_speed.long_name = "由les反演的风速"
@@ -309,7 +311,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncwind_speed_uncertainty = newnc.createVariable(wind_speed_uncertainty.name, wind_speed_uncertainty.dtype,
                                                        wind_speed_uncertainty.dimensions, zlib=True,
                                                        fletcher32=True,
-                                                       chunksizes=[np.uint32(561254), ],
+                                                       chunksizes=[np.uint32(sample_dim.size/2), ],
                                                        fill_value=wind_speed_uncertainty_fill_value)
     # 设定newncwind_speed_uncertainty的变量属性
     newncwind_speed_uncertainty.long_name = "风速反演不确定度"
@@ -329,7 +331,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncincidence_angle = newnc.createVariable(incidence_angle.name, incidence_angle.dtype,
                                                 incidence_angle.dimensions, zlib=True,
                                                 fletcher32=True,
-                                                chunksizes=[np.uint32(561254), ],
+                                                chunksizes=[np.uint32(sample_dim.size/2), ],
                                                 fill_value=incidence_angle_fill_value)
     # 设定newncincidence_angle的变量属性
     newncincidence_angle.long_name = "镜面点入射角"
@@ -349,7 +351,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncrange_corr_gain = newnc.createVariable(range_corr_gain.name, range_corr_gain.dtype,
                                                 range_corr_gain.dimensions, zlib=True,
                                                 fletcher32=True,
-                                                chunksizes=[np.uint32(561254), ],
+                                                chunksizes=[np.uint32(sample_dim.size/2), ],
                                                 fill_value=range_corr_gain_fill_value)
     # 设定newncrange_corr_gain的变量属性
     newncrange_corr_gain.long_name = "距离校正增益"
@@ -369,7 +371,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncfresnel_coeff = newnc.createVariable(fresnel_coeff.name, fresnel_coeff.dtype,
                                               fresnel_coeff.dimensions, zlib=True,
                                               fletcher32=True,
-                                              chunksizes=[np.uint32(561254), ],
+                                              chunksizes=[np.uint32(sample_dim.size/2), ],
                                               fill_value=fresnel_coeff_fill_value)
     # 设定newncfresnel_coeff的变量属性
     newncfresnel_coeff.long_name = "菲涅尔功率反射系数"
@@ -388,7 +390,7 @@ def copyPartNCToLocalFile(inputFileName, outputFileName):
     newncsample_time = newnc.createVariable(sample_time.name, sample_time.dtype,
                                             sample_time.dimensions, zlib=True,
                                             fletcher32=True,
-                                            chunksizes=[np.uint32(561254), ])    # 设定newncsample_time的变量属性
+                                            chunksizes=[np.uint32(sample_dim.size/2), ])    # 设定newncsample_time的变量属性
     newncsample_time.long_name = "采样时刻"
     newncsample_time.standard_name = "time"
     newncsample_time.calendar = "gregorian"
@@ -806,6 +808,25 @@ def copyPartNCToLocalFileWithOutCom(inputFileName, outputFileName):
     newnc.close()
     print "文件已经读取完毕，且关闭"
 
+# 读取文件大小，做对比分析
+def get_FileSize(filePath):
+    filePath = unicode(filePath,"utf8")
+    fsize = os.path.getsize(filePath)
+    fsize = fsize / float(1024*1024)
+    return round(fsize,2)
+
 if __name__ == '__main__':
     # parse_nc("F:\\fsdata\\cygl2.nc")
-    copyPartNCToLocalFileWithOutCom("F:\\fsdata\\cygl2.nc", "F:\\newncwithoutcom.nc")
+    print get_FileSize("F:\\fsdata\\cyg03.nc")
+    #17.8.1
+    # copyPartNCToLocalFile("E:\\l2\\213-20170801\\cyg.ddmi.s20170801-000000-e20170801-235959.l2.wind-mss.a20.d20.nc", "E:\\l2\\bf1ab.s20170801-000000-e20170801-235959.l2.wind.v10.nc")
+    # 17.8.17
+    # copyPartNCToLocalFile("E:\\l2\\229\\cyg.ddmi.s20170817-000000-e20170817-235959.l2.wind-mss.a20.d20.nc","E:\\l2\\bf1ab.s20170817-000000-e20170817-235959.l2.wind.v10.nc")
+    #17.8.23
+    #copyPartNCToLocalFile("E:\\l2\\235\\cyg.ddmi.s20170823-000000-e20170823-235959.l2.wind-mss.a20.d20.nc","E:\\l2\\bf1ab.s20170823-000000-e20170823-235959.l2.wind.v10.nc")
+    #17.9.1
+    # copyPartNCToLocalFile("E:\\l2\\244-20170901\\cyg.ddmi.s20170901-000000-e20170901-235959.l2.wind-mss.a20.d20.nc", "E:\\l2\\bf1ab.s20170901-000000-e20170901-235959.l2.wind.v10.nc")
+    #17.9.17
+    #copyPartNCToLocalFile("E:\\l2\\260\\cyg.ddmi.s20170917-000000-e20170917-235959.l2.wind-mss.a20.d20.nc", "E:\\l2\\bf1ab.s20170917-000000-e20170917-235959.l2.wind.v10.nc")
+    #17.9.20
+    # copyPartNCToLocalFile("E:\\l2\\263\\cyg.ddmi.s20170920-000000-e20170920-235959.l2.wind-mss.a20.d20.nc", "E:\\l2\\bf1ab.s20170920-000000-e20170920-235959.l2.wind.v10.nc")
